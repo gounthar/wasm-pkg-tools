@@ -50,16 +50,15 @@ jobs:
         run: |
           tag="${{ steps.tag.outputs.tag }}"
           asset="target/riscv64gc-unknown-linux-gnu/release/wkg-riscv64gc-unknown-linux-gnu"
+          notes="RISC-V 64-bit build of wkg ${tag}."
+          notes="${notes} Built with cross targeting riscv64gc-unknown-linux-gnu."
+          notes="${notes} Upstream: https://github.com/bytecodealliance/wasm-pkg-tools/releases/tag/${tag}"
           if gh release view "$tag" > /dev/null 2>&1; then
             gh release upload --clobber "$tag" "$asset"
           else
             gh release create "$tag" "$asset" \
               --title "wkg $tag (riscv64)" \
-              --notes "RISC-V 64-bit build of wkg $tag.
-
-Built with cross targeting riscv64gc-unknown-linux-gnu.
-
-Upstream release: https://github.com/bytecodealliance/wasm-pkg-tools/releases/tag/$tag"
+              --notes "$notes"
           fi
         env:
           GH_TOKEN: ${{ github.token }}
